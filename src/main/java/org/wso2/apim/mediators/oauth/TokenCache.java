@@ -14,8 +14,8 @@
 
 package org.wso2.apim.mediators.oauth;
 
-import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 
 /**
  * Token cache implementation.
@@ -23,14 +23,12 @@ import java.util.Map;
 public class TokenCache {
 
     private static final TokenCache instance = new TokenCache();
-
-    private final Map<String, String> tokenMap = new HashMap<>();
+    private final Map<String, String> tokenMap = new ConcurrentHashMap<String, String>();
 
     /**
      * Private constructor.
      */
     private TokenCache() {
-
     }
 
     /**
