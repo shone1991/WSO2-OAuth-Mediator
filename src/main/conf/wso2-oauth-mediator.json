@@ -1,12 +1,13 @@
 [
-  {
-    "id": "EP1",
-    "tokenApiUrl": "http://localhost:8280/token",
-    "apiKey": "1234567890",
-    "apiSecret": "0987654321",
-    "username": "admin",
-    "password": "admin",
-    "grantType": "client_credentials",
-    "tokenRefreshInterval": 20
-  }
+	{
+		"id": "EP1",
+		"tokenApiUrl": "http://localhost:8280/token",
+		"apiKey": "1234567890",
+		"apiSecret": "0987654321",
+		"username": "admin",
+		"password": "admin",
+		"grantType": "client_credentials",
+		"scope": "default",
+		"tokenRefreshInterval": 20
+	}
 ]

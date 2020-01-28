@@ -35,6 +35,7 @@ WSO2 OAuth mediator can be used for generating OAuth2 tokens for talking to serv
        "username": "admin",
        "password": "admin",
        "grantType": "client_credentials",
+       "scope": "default",
        "tokenRefreshInterval": 20
      }
    ]
