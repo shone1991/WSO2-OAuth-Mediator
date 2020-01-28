@@ -1,13 +1,13 @@
 # WSO2 OAuth Mediator
 
-WSO2 OAuth mediator can be used for generating OAuth2 tokens for talking to service endpoints secured with OAuth2 protocol in WSO2 ESB/Integrator and API Manager. Currently, it only supports password grant type and client-credentials grant type and it can be extended to incorporate other grant types as required.
+WSO2 OAuth mediator can be used for generating OAuth2 tokens for talking to service endpoints secured with OAuth2 protocol in WSO2 ESB/Integrator and API Manager. Currently, it only supports `password` grant type and `client-credentials` grant type and it can be extended to incorporate other grant types as required.
 
 ## Getting Started
 
 1. Clone this project:
 
    ```bash
-   git clone https://github.com/npamudika/wso2-oauth-mediator
+   git clone https://github.com/athiththan11/wso2-oauth-mediator
    cd wso2-oauth-mediator/
    ````
 
@@ -25,24 +25,25 @@ WSO2 OAuth mediator can be used for generating OAuth2 tokens for talking to serv
 
 4. Create a new configuration file inside the `[WSO2-SERVER-HOME]/repository/conf/` folder with the name `wso2-oauth-mediator.json` with the list of OAuth2 token endpoints required:
 
+   > Supported Grant Types : [`password`, `client_credentials`]
+
    ```json
    [
-     {
-       "id": "EP1",
-       "tokenApiUrl": "http://localhost:8280/token",
-       "apiKey": "1234567890",
-       "apiSecret": "0987654321",
-       "username": "admin",
-       "password": "admin",
-       "grantType": "client_credentials",
-       "scope": "default",
-       "tokenRefreshInterval": 20
-     }
+        {
+            "id": "EP1",
+            "tokenApiUrl": "http://localhost:8280/token",
+            "apiKey": "1234567890",
+            "apiSecret": "0987654321",
+            "username": "admin",
+            "password": "admin",
+            "grantType": "client_credentials",
+            "scope": "default",
+            "tokenRefreshInterval": 20
+        }
    ]
    ```
 
-   > Note: If you want to use password grant type, change grantType to "password".
-   > Note that the token refresh interval is defined in seconds.
+   > Note that the `token refresh interval` is defined in seconds.
 
 5. Create a sequence with the following OAuthMediator and the endpoint id provided in the configuration:
 
