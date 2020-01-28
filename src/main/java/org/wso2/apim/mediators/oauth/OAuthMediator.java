@@ -14,6 +14,11 @@
 
 package org.wso2.apim.mediators.oauth;
 
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.util.List;
+import java.util.Map;
+
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.synapse.MessageContext;
@@ -22,47 +27,47 @@ import org.apache.synapse.mediators.AbstractMediator;
 import org.wso2.apim.mediators.oauth.conf.ConfigReader;
 import org.wso2.apim.mediators.oauth.conf.OAuthEndpoint;
 
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.util.List;
-import java.util.Map;
-
 /**
- * OAuth mediator for generating OAuth tokens for invoking service endpoints secured with OAuth2.
+ * OAuth mediator for generating OAuth tokens for invoking service endpoints
+ * secured with OAuth2.
  */
 public class OAuthMediator extends AbstractMediator {
 
+    private String endpointId;
     private static final Log log = LogFactory.getLog(OAuthMediator.class);
 
-    private String endpointId;
-
     static {
-        log.info("Initializing OAuth mediator...");
+        log.info("Starting to initialize OAuth mediator");
         String carbonHome = System.getProperty("carbon.home");
-        String confFilePath = carbonHome + File.separator + "repository" + File.separator + "conf"
-                + File.separator + "wso2-oauth-mediator.json";
+        String confFilePath = carbonHome + File.separator + "repository" + File.separator + "conf" + File.separator
+                + "wso2-oauth-mediator.json";
         try {
             List<OAuthEndpoint> endpoints = ConfigReader.readConfiguration(confFilePath);
             TokenGeneratorScheduledExecutor scheduledExecutor = new TokenGeneratorScheduledExecutor();
-            for(OAuthEndpoint endpoint : endpoints) {
+            for (OAuthEndpoint endpoint : endpoints) {
                 scheduledExecutor.schedule(endpoint);
             }
         } catch (FileNotFoundException e) {
             log.error("Configuration file not found: " + confFilePath);
             throw new RuntimeException(e);
         }
-        log.info("OAuth mediator initialized");
-
+        log.info("OAuth mediator initialized successfully");
     }
 
     @Override
+    @SuppressWarnings("unchecked")
     public boolean mediate(MessageContext messageContext) {
-        log.debug("---> OAuth mediator invoked");
+        if (log.isDebugEnabled()) {
+            log.debug("OAuth mediator :: mediate method invoked");
+        }
         String accessToken = TokenCache.getInstance().getTokenMap().get(getEndpointId());
-        Map<String,Object> transportHeaders = (Map<String, Object>) ((Axis2MessageContext)messageContext)
+        Map<String, Object> transportHeaders = (Map<String, Object>) ((Axis2MessageContext) messageContext)
                 .getAxis2MessageContext().getProperty("TRANSPORT_HEADERS");
         transportHeaders.put("Authorization", "Bearer " + accessToken);
-        log.debug("---> Access token set: " + accessToken);
+        if (log.isDebugEnabled()) {
+            log.debug("Retrieved access token from the Token endpoint :: " + getEndpointId() + " access_token = "
+                    + accessToken);
+        }
         return true;
     }
 

@@ -35,6 +35,7 @@ public class TokenCache {
 
     /**
      * Get token cache instance.
+     * 
      * @return
      */
     public static TokenCache getInstance() {
@@ -43,6 +44,7 @@ public class TokenCache {
 
     /**
      * Get token map.
+     * 
      * @return
      */
     public Map<String, String> getTokenMap() {
