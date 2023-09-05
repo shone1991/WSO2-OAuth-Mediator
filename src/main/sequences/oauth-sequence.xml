@@ -1,5 +1,5 @@
 <sequence xmlns="http://ws.apache.org/ns/synapse" name="oauth-sequence">
     <class name = "org.wso2.apim.mediators.oauth.OAuthMediator">
-        <property name="endpointId" value="EP1"></property>
+        <property name="endpointId" value="EP2"></property>
     </class>
 </sequence>

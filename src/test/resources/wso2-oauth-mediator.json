@@ -8,5 +8,16 @@
 		"password": "admin",
 		"scope": "default",
 		"tokenRefreshInterval": 60
+	},
+	{
+		"id": "EP2",
+		"tokenApiUrl": "https://localhost:9445/oauth2/token",
+		"apiKey": "6QYpURlOeaPMC7xYPnB1fGmXwLga",
+		"apiSecret": "cuzGyfxtWNAC06DxYRwiaD67SNEa",
+		"username": "admin",
+		"password": "admin",
+		"grantType": "client_credentials",
+		"scope": "default",
+		"tokenRefreshInterval": 60
 	}
 ]

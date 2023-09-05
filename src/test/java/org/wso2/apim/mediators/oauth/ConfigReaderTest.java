@@ -1,6 +1,8 @@
 package org.wso2.apim.mediators.oauth;
 
-import static org.junit.Assert.assertEquals;
+import org.junit.Test;
+import org.wso2.apim.mediators.oauth.conf.ConfigReader;
+import org.wso2.apim.mediators.oauth.conf.OAuthEndpoint;
 
 import java.io.FileNotFoundException;
 import java.nio.file.Path;
@@ -8,9 +10,7 @@ import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.junit.Test;
-import org.wso2.apim.mediators.oauth.conf.ConfigReader;
-import org.wso2.apim.mediators.oauth.conf.OAuthEndpoint;
+import static org.junit.Assert.assertEquals;
 
 public class ConfigReaderTest {
 

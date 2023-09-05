@@ -21,10 +21,10 @@ import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.net.URLEncoder;
-import java.util.Arrays;
-import java.util.Base64;
-import java.util.HashSet;
-import java.util.Set;
+import java.security.KeyManagementException;
+import java.security.NoSuchAlgorithmException;
+import java.security.cert.X509Certificate;
+import java.util.*;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
@@ -32,6 +32,11 @@ import com.google.gson.GsonBuilder;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.wso2.apim.mediators.oauth.client.domain.TokenResponse;
+import org.wso2.apim.mediators.oauth.util.ParameterStringBuilder;
+import sun.net.www.http.HttpClient;
+import sun.net.www.protocol.https.HttpsURLConnectionImpl;
+
+import javax.net.ssl.*;
 
 /**
  * OAuth client implementation.
@@ -75,24 +80,26 @@ public class OAuthClient {
             log.debug("Initializing token generation request: [token-endpoint] " + url);
         }
 
-        HttpURLConnection connection = null;
-        String urlEncodedParams = null;
+        HttpURLConnection connection;
+        String urlEncodedParams;
 
         URL url_ = new URL(url);
         connection = (HttpURLConnection) url_.openConnection();
         connection.setDoOutput(true);
 
         // Set query parameters
+        Map<String, String> parameters = new HashMap<>();
         if (grantType.equals("password")) {
-            urlEncodedParams = "?grant_type=" + URLEncoder.encode("password", UTF_8) + "&username="
-                    + URLEncoder.encode(username, UTF_8) + "&password=" + URLEncoder.encode(password, UTF_8);
+            parameters.put("grant_type", grantType);
+            parameters.put("username",username);
+            parameters.put("password",password);
             if (scope != null && !scope.isEmpty()) {
-                urlEncodedParams += "&scope=" + URLEncoder.encode(scope, UTF_8);
+                parameters.put("scope",scope);
             }
         } else if (grantType.equals("client_credentials")) {
-            urlEncodedParams = "?grant_type=" + URLEncoder.encode("client_credentials", UTF_8);
+            parameters.put("grant_type", grantType);
             if (scope != null && !scope.isEmpty()) {
-                urlEncodedParams += "&scope=" + URLEncoder.encode(scope, UTF_8);
+                parameters.put("scope",scope);
             }
         }
 
@@ -102,6 +109,8 @@ public class OAuthClient {
         String credentials = Base64.getEncoder().encodeToString((apiKey + ":" + apiSecret).getBytes());
         connection.setRequestProperty(AUTHORIZATION_HEADER, "Basic " + credentials);
         connection.setRequestProperty(CONTENT_TYPE_HEADER, APPLICATION_X_WWW_FORM_URLENCODED);
+
+        urlEncodedParams=ParameterStringBuilder.getParamsString(parameters);
 
         if (urlEncodedParams != null) {
             connection.setRequestProperty(CONTENT_LENGTH, Integer.toString(urlEncodedParams.getBytes().length));
@@ -115,7 +124,6 @@ public class OAuthClient {
         if (log.isDebugEnabled()) {
             log.debug("Requesting access token from the Token endpoint : " + url);
         }
-
         int responseCode = connection.getResponseCode();
 
         if (log.isDebugEnabled()) {
