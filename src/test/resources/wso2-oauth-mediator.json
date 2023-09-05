@@ -6,8 +6,9 @@
 		"apiSecret": "4321",
 		"username": "admin",
 		"password": "admin",
+		"grantType": "client_credentials",
 		"scope": "default",
-		"tokenRefreshInterval": 60
+		"tokenRefreshInterval": 20
 	},
 	{
 		"id": "EP2",

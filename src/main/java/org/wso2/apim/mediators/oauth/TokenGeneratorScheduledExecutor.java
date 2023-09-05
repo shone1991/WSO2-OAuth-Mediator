@@ -20,8 +20,10 @@ import java.util.concurrent.TimeUnit;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.wso2.apim.mediators.oauth.client.JWTOauthClient;
 import org.wso2.apim.mediators.oauth.client.OAuthClient;
 import org.wso2.apim.mediators.oauth.client.domain.TokenResponse;
+import org.wso2.apim.mediators.oauth.conf.JWTEndpoint;
 import org.wso2.apim.mediators.oauth.conf.OAuthEndpoint;
 
 /**
@@ -41,7 +43,7 @@ public class TokenGeneratorScheduledExecutor {
      */
     public void schedule(OAuthEndpoint oAuthEndpoint) {
         try {
-            log.info("Scheduling token generator for token endpoint " + getEndpointId(oAuthEndpoint));
+            log.info("Scheduling token generator for oauth2 token endpoint " + getEndpointId(oAuthEndpoint));
 
             executorService.scheduleAtFixedRate(() -> {
                 try {
@@ -67,7 +69,39 @@ public class TokenGeneratorScheduledExecutor {
         }
     }
 
+    public void schedule(JWTEndpoint jwtEndpoint) {
+        try {
+            log.info("Scheduling token generator for jwt token endpoint " + getEndpointId(jwtEndpoint));
+
+            executorService.scheduleAtFixedRate(() -> {
+                try {
+                    if (log.isDebugEnabled()) {
+                        log.debug("Generating access token: " + getEndpointId(jwtEndpoint));
+                    }
+
+                    TokenResponse tokenResponse = JWTOauthClient.generateToken(jwtEndpoint.getTokenApiUrl(),
+                            jwtEndpoint.getApiKey(), jwtEndpoint.getApiSecret(), jwtEndpoint.getUsername(),
+                            jwtEndpoint.getPassword(), jwtEndpoint.getGrantType(), jwtEndpoint.getScope());
+
+                    if (log.isDebugEnabled()) {
+                        log.debug("Access token generated: " + getEndpointId(jwtEndpoint) + " [access-token] "
+                                + tokenResponse.getAccessToken());
+                    }
+                    TokenCache.getInstance().getTokenMap().put(jwtEndpoint.getId(), tokenResponse.getAccessToken());
+                } catch (Exception e) {
+                    log.error("Could not generated access token " + getEndpointId(jwtEndpoint), e);
+                }
+            }, 0, jwtEndpoint.getTokenRefreshInterval(), TimeUnit.SECONDS);
+        } catch (Exception e) {
+            log.error(e);
+        }
+    }
+
     private String getEndpointId(OAuthEndpoint oAuthEndpoint) {
         return "[id] " + oAuthEndpoint.getId() + " [url] " + oAuthEndpoint.getTokenApiUrl();
+    }
+
+    private String getEndpointId(JWTEndpoint jwtEndpoint) {
+        return "[id] " + jwtEndpoint.getId() + " [url] " + jwtEndpoint.getTokenApiUrl();
     }
 }

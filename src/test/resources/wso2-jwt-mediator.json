@@ -1,0 +1,13 @@
+[
+	{
+		"id": "EP1",
+		"tokenApiUrl": "https://open-data.mc.uz/api/p/clients/auth",
+		"apiKey": "afc596c3-01cb-4296-b089-e6d8d0bb934a",
+		"apiSecret": "2jTUa1nnlULsaFWxhSQfDAgjuTKchIku",
+		"username": "",
+		"password": "",
+		"grantType": "client_credentials",
+		"scope": "",
+		"tokenRefreshInterval": 60
+	}
+]

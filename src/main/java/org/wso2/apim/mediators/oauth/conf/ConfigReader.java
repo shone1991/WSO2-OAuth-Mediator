@@ -39,4 +39,13 @@ public class ConfigReader {
         OAuthEndpoint[] array = gson.fromJson(reader, OAuthEndpoint[].class);
         return Arrays.asList(array);
     }
+
+    public static List<JWTEndpoint> readJWTConfiguration(String confFilePath) throws FileNotFoundException {
+        if (log.isDebugEnabled()) {
+            log.debug("Reading jwt mediator configuration from path = " + confFilePath);
+        }
+        JsonReader reader = new JsonReader(new FileReader(confFilePath));
+        JWTEndpoint[] array = gson.fromJson(reader, JWTEndpoint[].class);
+        return Arrays.asList(array);
+    }
 }
